@@ -5,7 +5,7 @@ import { LuSunrise, LuUtensils, LuSun, LuMoon } from "react-icons/lu";
 import { getSellAvailability } from "../../lib/sellMyCar";
 import StepProgress from "./StepProgress";
 import {
-  ALL_SLOTS, DAYS_AHEAD, SLOT_GROUPS, dayCard, isPastSlot, longDate, nextDays, slotLabel,
+  ALL_SLOTS, DAYS_AHEAD, SLOT_GROUPS, dayCard, isPastSlot, longDate, nextDays, slotLabel, ukNow,
 } from "./slots";
 
 const GROUP_ICONS = { morning: LuSunrise, lunch: LuUtensils, afternoon: LuSun, evening: LuMoon };
@@ -14,10 +14,10 @@ const GROUP_ICONS = { morning: LuSunrise, lunch: LuUtensils, afternoon: LuSun, e
 export default function AppointmentStep({
   appointment, onAppointmentChange, takenSlots, onBack, onSubmit, submitting, error,
 }) {
-  // Re-read the clock every minute so slots that start while the page is open lock out.
-  const [now, setNow] = useState(() => new Date());
+  // Re-read the UK clock every minute so slots that start while the page is open lock out.
+  const [now, setNow] = useState(() => ukNow());
   useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 60_000);
+    const id = setInterval(() => setNow(ukNow()), 60_000);
     return () => clearInterval(id);
   }, []);
 
@@ -61,7 +61,7 @@ export default function AppointmentStep({
         <div>
           <h2 className="smc-card-title">Book your inspection</h2>
           <p className="smc-card-sub">
-            Choose a time that suits you. We&apos;ll inspect your car and confirm your offer.
+            Choose a time between 9am and 6pm UK time. We&apos;ll inspect your car and confirm your offer.
           </p>
         </div>
       </div>

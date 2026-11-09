@@ -8,7 +8,7 @@ New page at `/sell-my-car` where a customer offers us their car:
 2. Confirm the car: "Citroen C3 · 2009 · Silver · Diesel" with a "Not your car?" link.
    Skipped if the lookup can't identify the car.
 3. Fill in name, email, phone (UK only), address, optional message and optional photos
-4. Pick a 30-minute inspection slot in the next 7 days (10:00–18:00)
+4. Pick a 30-minute inspection slot in the next 7 days (09:00–18:00 UK time)
 5. Confirmation screen with a summary of what they sent
 
 There is no instant valuation. The owner reviews the details and photos, then
@@ -70,10 +70,11 @@ ENDPOINTS NEEDED
        address           "1 High Street, Bedford MK40 1AA"
        message           optional
        appointment_date  "2026-11-03"
-       appointment_time  "12:00"           (30-min slot start, 10:00–17:30)
+       appointment_time  "12:00"           (30-min slot start, 09:00–17:30, UK time)
        images            0–10 files, repeated key, PNG/JPG/GIF/WEBP, ≤10MB each
    - Please re-validate server-side: UK phone, slot inside opening hours, slot not
-     in the past, date within the next 7 days.
+     in the past, date within the next 7 days. Dates and times are UK time, so use
+     Europe/London for the "past" and "next 7 days" checks.
    - Re-run the lookup server-side; don't trust vehicle data from the client.
    - 201: { "success": true, "id": 12, "message": "..." }
    - 400: { "success": false, "errors": { "phone": ["..."], "images": ["..."] } }
