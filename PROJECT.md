@@ -80,6 +80,7 @@ noorrix-motors/
 │   │   ├── forgot-password/new-password/page.js
 │   │   ├── login/page.js
 │   │   ├── part-exchange/page.js
+│   │   ├── sell-my-car/page.js
 │   │   ├── payment/cancel/page.js
 │   │   ├── payment/complete/page.js
 │   │   ├── privacy-policy/page.js
@@ -150,6 +151,7 @@ noorrix-motors/
 │   │   ├── PaymentCancel/               # Folder
 │   │   ├── PaymentComplete/             # Folder
 │   │   ├── PrivacyPolicy.jsx / PrivacyPolicy.css
+│   │   ├── SellMyCar/                   # Folder — sell flow (reg → confirm car → details → inspection → done)
 │   │   ├── ResetPassword/               # Folder
 │   │   ├── Servicing.jsx / Servicing.css
 │   │   ├── Sitemap.jsx / Sitemap.css
@@ -172,6 +174,8 @@ noorrix-motors/
 │   │   ├── format.js                    # Formatting helpers (brandSlug, etc.)
 │   │   ├── newsletter.js
 │   │   ├── partExchange.js
+│   │   ├── sellMyCar.js                 # Reg lookup, inspection availability, submit
+│   │   ├── ukPhone.js                   # UK phone validation + formatting
 │   │   ├── testimonials.js
 │   │   └── vehicleSourcing.js
 │   │
@@ -222,6 +226,7 @@ The project uses **Next.js App Router** (file-system based routing). Every folde
 | `/delivery`                      | `src/app/delivery/page.js`                    |
 | `/dents-paints`                  | `src/app/dents-paints/page.js`                |
 | `/part-exchange`                 | `src/app/part-exchange/page.js`               |
+| `/sell-my-car`                   | `src/app/sell-my-car/page.js`                 |
 | `/vehicle-sourcing`              | `src/app/vehicle-sourcing/page.js`            |
 | `/login`                         | `src/app/login/page.js`                       |
 | `/reset-password`                | `src/app/reset-password/page.js`              |
@@ -533,6 +538,7 @@ The following documents in `docs/` specify the expected backend API contracts:
 | `docs/backend-stripe-hosted-checkout.md`         | Stripe Checkout Session endpoints  |
 | `docs/FILTER_BACKEND_SCENARIO.md`                | Dynamic filter API specification   |
 | `docs/BLOGS_DYNAMIC_SPEC.md`                     | Dynamic blogs API specification    |
+| `docs/BACKEND_SELL_MY_CAR_REQUEST.md`            | Sell My Car lookup + submission    |
 
 The backend (Django REST Framework) is expected to be running at the URL specified by `NEXT_PUBLIC_API_URL`.
 

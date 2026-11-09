@@ -1,0 +1,1743 @@
+/* ============================================
+   Sell My Car — reg lookup → details → inspection → done
+   ============================================ */
+
+.smc-flow {
+  --smc-accent: var(--theme-color, #ac1c7a);
+  --smc-accent-hover: var(--hover-color, #8a1560);
+  --smc-accent-soft: #f9eef5;
+  --smc-accent-on-dark: #e85aaf; /* readable magenta on the dark hero */
+  --smc-ink: #111111;
+  --smc-muted: #6b7280;
+  --smc-line: #e5e7eb;
+  --smc-field: #f8f8fa;
+  --smc-danger: #dc2626;
+
+  position: relative;
+  overflow: hidden;
+  background-color: #141214;
+  padding: 72px 20px 96px;
+  min-height: 600px;
+  color: #fff;
+  font-family: var(--font-main, 'Montserrat', sans-serif);
+}
+
+.smc-flow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--smc-accent);
+  z-index: 3;
+}
+
+.smc-flow-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url(https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=1920&q=80);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.35;
+  z-index: 0;
+}
+
+.smc-flow-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(900px 420px at 12% -10%, rgba(172, 28, 122, 0.38), transparent 60%),
+    radial-gradient(700px 380px at 100% 110%, rgba(172, 28, 122, 0.24), transparent 60%),
+    linear-gradient(180deg, rgba(20, 18, 20, 0.82) 0%, rgba(20, 18, 20, 0.94) 100%);
+  z-index: 1;
+}
+
+.smc-flow-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+@keyframes smc-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes smc-spin {
+  to { transform: rotate(360deg); }
+}
+
+.smc-spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  animation: smc-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+/* ── Step 1: hero + lookup ───────────────────── */
+.smc-hero {
+  text-align: center;
+  padding-top: 16px;
+  animation: smc-rise 0.35s ease;
+}
+
+.smc-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--smc-accent-on-dark);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 6px 20px;
+  border-radius: 50px;
+  margin-bottom: 18px;
+}
+
+.smc-title {
+  font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+  font-weight: 800;
+  font-size: 86px;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: #fff;
+  margin: 0 0 20px;
+}
+
+.smc-title span {
+  color: var(--smc-accent-on-dark);
+}
+
+.smc-subtitle {
+  font-size: 17px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 640px;
+  margin: 0 auto 36px;
+}
+
+.smc-subtitle strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+.smc-lookup {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr auto;
+  gap: 16px;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.smc-plate,
+.smc-mileage {
+  display: flex;
+  align-items: center;
+  height: 84px;
+  background: #fff;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  overflow: hidden;
+  cursor: text;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.smc-plate:focus-within,
+.smc-mileage:focus-within {
+  border-color: var(--smc-accent);
+  box-shadow: 0 0 0 4px rgba(172, 28, 122, 0.3);
+}
+
+.smc-plate-band {
+  align-self: stretch;
+  width: 54px;
+  flex-shrink: 0;
+  background: #003399;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+.smc-plate-band svg {
+  width: 30px;
+  height: 15px;
+  border-radius: 2px;
+  display: block;
+}
+
+.smc-plate input,
+.smc-mileage input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  text-align: center;
+  font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  font-weight: 700;
+  color: var(--smc-ink);
+}
+
+.smc-plate input {
+  font-size: 40px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 0 12px;
+}
+
+.smc-mileage {
+  padding: 0 20px;
+  gap: 12px;
+}
+
+.smc-mileage input {
+  font-size: 36px;
+  letter-spacing: 1px;
+}
+
+.smc-plate input::placeholder,
+.smc-mileage input::placeholder {
+  color: #a1a1aa;
+}
+
+.smc-mileage-icon {
+  font-size: 34px;
+  color: var(--smc-accent);
+  flex-shrink: 0;
+}
+
+.smc-mileage-unit {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #a1a1aa;
+  flex-shrink: 0;
+}
+
+.smc-btn-value {
+  height: 84px;
+  padding: 0 34px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--smc-accent);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  white-space: nowrap;
+  box-shadow: 0 12px 30px rgba(172, 28, 122, 0.4);
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.smc-btn-value:hover:not(:disabled) {
+  background: var(--smc-accent-hover);
+  transform: translateY(-2px);
+}
+
+.smc-btn-value:disabled {
+  opacity: 0.8;
+  cursor: wait;
+}
+
+.smc-lookup-error {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 18px auto 0;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: rgba(220, 38, 38, 0.16);
+  border: 1px solid rgba(248, 113, 113, 0.45);
+  color: #fecaca;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.smc-trust {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 40px;
+  padding: 10px 20px;
+  border-radius: 50px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.smc-trust-logo {
+  height: 16px;
+  width: auto;
+}
+
+.smc-trust-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--smc-line);
+}
+
+.smc-trust-stars {
+  display: inline-flex;
+  gap: 2px;
+  font-size: 14px;
+  color: #d4d4d8;
+}
+
+.smc-trust-stars .is-on {
+  color: #f5b301;
+}
+
+.smc-trust-text {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* ── Card shell (details + appointment) ──────── */
+.smc-card {
+  max-width: 920px;
+  margin: 0 auto;
+  background: #fff;
+  color: var(--smc-ink);
+  border-radius: 20px;
+  padding: 32px 36px 36px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+  animation: smc-rise 0.35s ease;
+}
+
+.smc-progress {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+}
+
+.smc-progress-step {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.smc-progress-bar {
+  height: 5px;
+  border-radius: 99px;
+  background: #f1e6ed;
+  transition: background 0.3s ease;
+}
+
+.smc-progress-step.is-done .smc-progress-bar,
+.smc-progress-step.is-current .smc-progress-bar {
+  background: var(--smc-accent);
+}
+
+.smc-progress-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #a1a1aa;
+}
+
+.smc-progress-step.is-done .smc-progress-meta,
+.smc-progress-step.is-current .smc-progress-meta {
+  color: var(--smc-ink);
+}
+
+.smc-progress-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  background: #f3f4f6;
+  color: var(--smc-muted);
+  flex-shrink: 0;
+}
+
+.smc-progress-step.is-current .smc-progress-dot {
+  background: var(--smc-accent);
+  color: #fff;
+}
+
+.smc-progress-step.is-done .smc-progress-dot {
+  background: var(--smc-accent-soft);
+  color: var(--smc-accent);
+}
+
+.smc-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.smc-card-head--center {
+  justify-content: center;
+  text-align: center;
+}
+
+.smc-card-title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--smc-ink);
+  margin: 0 0 4px;
+}
+
+.smc-card-sub {
+  font-size: 14px;
+  color: var(--smc-muted);
+  margin: 0;
+}
+
+/* Car identity: plate, name and one-line details (confirm + details steps) */
+.smc-car-head {
+  margin-bottom: 14px;
+}
+
+.smc-car-name {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--smc-ink);
+  margin: 10px 0 4px;
+}
+
+.smc-car-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  font-size: 13.5px;
+  color: #374151;
+  margin: 0;
+}
+
+.smc-confirm {
+  max-width: 680px;
+}
+
+.smc-confirm .smc-car-head {
+  margin-bottom: 0;
+}
+
+.smc-confirm .smc-car-name {
+  font-size: 44px;
+}
+
+.smc-confirm .smc-car-meta {
+  font-size: 17px;
+}
+
+/* Details form: tighter than the other steps */
+.smc-details {
+  padding: 22px 28px 24px;
+}
+
+.smc-details .smc-progress {
+  margin-bottom: 16px;
+}
+
+.smc-details .smc-actions {
+  margin-top: 10px;
+}
+
+.smc-details .smc-btn {
+  height: 42px;
+  padding: 0 20px;
+  font-size: 13.5px;
+}
+
+.smc-confirm .smc-change {
+  font-size: inherit;
+}
+
+.smc-confirm .smc-actions {
+  margin-top: 32px;
+}
+
+.smc-change {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--smc-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Read-only plate badge */
+.smc-plate-badge {
+  display: inline-flex;
+  align-items: stretch;
+  height: 36px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1.5px solid var(--smc-ink);
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.smc-plate-badge .smc-plate-band {
+  width: 26px;
+  gap: 2px;
+  font-size: 8px;
+}
+
+.smc-plate-badge .smc-plate-band svg {
+  width: 16px;
+  height: 8px;
+  border-radius: 1px;
+}
+
+.smc-plate-badge-reg {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  font-weight: 700;
+  font-size: 21px;
+  letter-spacing: 1.5px;
+  color: var(--smc-ink);
+}
+
+/* Vehicle chips */
+.smc-chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+}
+
+.smc-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.smc-chip svg {
+  font-size: 15px;
+  color: var(--smc-accent-on-dark);
+  flex-shrink: 0;
+}
+
+/* Form */
+.smc-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 14px;
+}
+
+.smc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.smc-field--full {
+  grid-column: 1 / -1;
+}
+
+.smc-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--smc-ink);
+}
+
+.smc-req {
+  color: var(--smc-accent);
+  margin-left: 2px;
+}
+
+.smc-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--smc-line);
+  border-radius: 8px;
+  background: var(--smc-field);
+  font-family: inherit;
+  font-size: 13.5px;
+  color: var(--smc-ink);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.smc-input::placeholder {
+  color: #9ca3af;
+}
+
+.smc-input:hover {
+  border-color: #d4d4d8;
+}
+
+.smc-input:focus {
+  border-color: var(--smc-accent);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(172, 28, 122, 0.12);
+}
+
+.smc-input.is-invalid {
+  border-color: var(--smc-danger);
+  background: #fff7f7;
+}
+
+.smc-input.is-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+}
+
+textarea.smc-input {
+  min-height: 76px;
+  resize: vertical;
+}
+
+.smc-field-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--smc-danger);
+}
+
+/* Image upload */
+.smc-drop {
+  border: 1.5px dashed #cdb3c4;
+  border-radius: 10px;
+  background: #fcf8fb;
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.smc-drop:hover,
+.smc-drop:focus-visible,
+.smc-drop.is-dragging {
+  border-color: var(--smc-accent);
+  background: var(--smc-accent-soft);
+  outline: none;
+}
+
+.smc-drop-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  margin: 0 auto 6px;
+  display: grid;
+  place-items: center;
+  background: rgba(172, 28, 122, 0.1);
+  color: var(--smc-accent);
+  font-size: 18px;
+}
+
+.smc-drop-text {
+  font-size: 13px;
+  color: #374151;
+  margin: 0 0 2px;
+}
+
+.smc-drop-browse {
+  color: var(--smc-accent);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.smc-drop-hint {
+  font-size: 11px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.smc-thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 8px;
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+}
+
+.smc-thumb {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #eee;
+  background: #f4f4f5;
+}
+
+.smc-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.smc-thumb button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(17, 17, 17, 0.78);
+  color: #fff;
+  transition: background 0.2s ease;
+}
+
+.smc-thumb button:hover {
+  background: var(--smc-danger);
+}
+
+/* Buttons */
+.smc-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.smc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 50px;
+  padding: 0 26px;
+  border: 0;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.smc-btn--dark {
+  background: var(--smc-ink);
+  color: #fff;
+}
+
+.smc-btn--dark:hover:not(:disabled) {
+  background: #2a2a2a;
+}
+
+.smc-btn--primary {
+  background: var(--smc-accent);
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(172, 28, 122, 0.3);
+}
+
+.smc-btn--primary:hover:not(:disabled) {
+  background: var(--smc-accent-hover);
+  transform: translateY(-1px);
+}
+
+.smc-btn--ghost {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.smc-btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.smc-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* ── Step 3: appointment ─────────────────────── */
+.smc-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 26px;
+}
+
+.smc-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 6px;
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--smc-ink);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.smc-day:hover:not(:disabled) {
+  background: var(--smc-accent-soft);
+}
+
+.smc-day-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--smc-muted);
+}
+
+.smc-day-date {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.smc-day.is-selected {
+  background: var(--smc-accent);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(172, 28, 122, 0.3);
+}
+
+.smc-day.is-selected .smc-day-name {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.smc-day:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.smc-date-heading {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--smc-ink);
+  margin: 0 0 20px;
+}
+
+.smc-slot-groups {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.smc-slot-group h4 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--smc-ink);
+  margin: 0 0 12px;
+}
+
+.smc-slot-group h4 svg {
+  color: var(--smc-accent);
+  font-size: 17px;
+}
+
+.smc-slot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.smc-slot {
+  width: 100%;
+  padding: 10px 6px;
+  border: 1.5px solid #d4d4d8;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--smc-ink);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.smc-slot:hover:not(:disabled) {
+  border-color: var(--smc-accent);
+  color: var(--smc-accent);
+}
+
+.smc-slot.is-selected,
+.smc-slot.is-selected:hover {
+  background: var(--smc-accent);
+  border-color: var(--smc-accent);
+  color: #fff;
+}
+
+.smc-slot:disabled {
+  background: #f6f6f7;
+  border-color: #ececf0;
+  color: #b8b8c0;
+  cursor: not-allowed;
+}
+
+.smc-slots-note {
+  text-align: center;
+  font-size: 13px;
+  color: var(--smc-muted);
+  margin: 16px 0 0;
+}
+
+.smc-submit-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 22px 0 0;
+  padding: 11px 14px;
+  border-radius: 10px;
+  background: #fdecea;
+  color: #b42318;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ── Step 4: done ────────────────────────────── */
+.smc-done {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 56px;
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 0;
+  animation: smc-rise 0.35s ease;
+}
+
+.smc-done-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 24px;
+  font-size: 34px;
+  color: #fff;
+  background: rgba(172, 28, 122, 0.22);
+  border: 1px solid rgba(232, 90, 175, 0.5);
+}
+
+.smc-done-title {
+  font-size: clamp(28px, 3.6vw, 42px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin: 0 0 14px;
+}
+
+.smc-done-text {
+  font-size: 17px;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0 0 30px;
+}
+
+.smc-done-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.smc-estimate {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  column-gap: 10px;
+  row-gap: 2px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.smc-estimate-label {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.smc-estimate-value {
+  font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  font-size: 46px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--smc-accent-on-dark);
+}
+
+.smc-estimate-note {
+  flex-basis: 100%;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.smc-summary {
+  background: #fff;
+  color: var(--smc-ink);
+  border-radius: 18px;
+  border-top: 4px solid var(--smc-accent);
+  padding: 26px 28px;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.4);
+}
+
+.smc-summary h3 {
+  font-size: 21px;
+  font-weight: 800;
+  margin: 0 0 16px;
+}
+
+.smc-summary-vehicle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #f0f0f2;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.smc-summary dl {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin: 0;
+}
+
+.smc-summary-row {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.smc-summary-row dt {
+  font-weight: 700;
+  color: #374151;
+  flex-shrink: 0;
+}
+
+.smc-summary-row dd {
+  margin: 0;
+  color: var(--smc-ink);
+  word-break: break-word;
+}
+
+.smc-summary-row.is-stacked {
+  flex-direction: column;
+  gap: 4px;
+}
+
+.smc-summary-row.is-stacked dd {
+  font-size: 13.5px;
+}
+
+/* ── How it works ────────────────────────────── */
+.smc-how {
+  background: #fff;
+  padding: 80px 20px;
+}
+
+.smc-how-inner {
+  max-width: 1260px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.smc-section-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--theme-color, #ac1c7a);
+  margin-bottom: 12px;
+}
+
+.smc-section-title {
+  font-size: 46px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.12;
+  color: #12121c;
+  max-width: 680px;
+  margin: 0 auto 18px;
+}
+
+.smc-section-title span {
+  color: var(--theme-color, #ac1c7a);
+}
+
+.smc-section-subtitle {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #6b7280;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.smc-how-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+  margin-top: 64px;
+  text-align: left;
+}
+
+.smc-how-card {
+  background: #fff;
+  border: 1px solid #f0f0f3;
+  border-radius: 28px;
+  padding: 14px 14px 30px;
+  box-shadow: 0 6px 24px rgba(17, 17, 28, 0.04);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.smc-how-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(172, 28, 122, 0.12);
+}
+
+.smc-how-media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #f4f4f5;
+}
+
+.smc-how-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.smc-how-card:hover .smc-how-media img {
+  transform: scale(1.04);
+}
+
+.smc-how-step {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  padding: 9px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #12121c;
+}
+
+.smc-how-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #12121c;
+  margin: 26px 14px 10px;
+}
+
+.smc-how-card p {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #6b7280;
+  margin: 0 14px;
+}
+
+/* ── Responsive ──────────────────────────────── */
+@media (max-width: 900px) {
+  .smc-lookup {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .smc-btn-value {
+    grid-column: 1 / -1;
+  }
+
+  .smc-slot-groups {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 24px;
+  }
+
+  .smc-done {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    text-align: center;
+  }
+
+  .smc-done-icon {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .smc-done-actions {
+    justify-content: center;
+  }
+
+  .smc-summary {
+    text-align: left;
+  }
+
+  .smc-section-title {
+    font-size: 38px;
+  }
+
+  .smc-how-grid {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+    margin-top: 44px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  /* ── Layout ── */
+  .smc-flow {
+    padding: 36px 14px 52px;
+    min-height: 0;
+  }
+
+  /* ── Step 1: hero + lookup ── */
+  .smc-tag {
+    font-size: 0.68rem;
+    letter-spacing: 1.5px;
+    padding: 5px 14px;
+    margin-bottom: 14px;
+  }
+
+  .smc-title {
+    font-size: 50px;
+    margin-bottom: 14px;
+  }
+
+  .smc-subtitle {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 22px;
+  }
+
+  .smc-lookup {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .smc-plate,
+  .smc-mileage,
+  .smc-btn-value {
+    height: 58px;
+    border-radius: 9px;
+  }
+
+  .smc-plate-band {
+    width: 42px;
+    gap: 4px;
+    font-size: 11px;
+  }
+
+  .smc-plate-band svg {
+    width: 24px;
+    height: 12px;
+  }
+
+  .smc-plate input {
+    font-size: 28px;
+    letter-spacing: 2px;
+  }
+
+  .smc-mileage {
+    padding: 0 14px;
+    gap: 10px;
+  }
+
+  .smc-mileage input {
+    font-size: 26px;
+  }
+
+  .smc-mileage-icon {
+    font-size: 26px;
+  }
+
+  .smc-mileage-unit {
+    font-size: 11px;
+  }
+
+  .smc-btn-value {
+    font-size: 16px;
+    padding: 0 20px;
+  }
+
+  .smc-lookup-error {
+    font-size: 13px;
+    padding: 9px 12px;
+    margin-top: 14px;
+  }
+
+  .smc-trust {
+    gap: 8px;
+    margin-top: 26px;
+    padding: 8px 14px;
+    border-radius: 12px;
+  }
+
+  .smc-trust-logo {
+    height: 13px;
+  }
+
+  .smc-trust-stars {
+    font-size: 12px;
+  }
+
+  .smc-trust-text {
+    font-size: 12px;
+  }
+
+  /* ── Card shell ── */
+  .smc-card {
+    padding: 20px 14px 22px;
+    border-radius: 14px;
+  }
+
+  .smc-progress {
+    margin-bottom: 20px;
+    gap: 6px;
+  }
+
+  .smc-progress-step {
+    gap: 8px;
+  }
+
+  .smc-progress-bar {
+    height: 4px;
+  }
+
+  .smc-progress-label {
+    font-size: 11px;
+  }
+
+  .smc-progress-dot {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+
+  .smc-card-head {
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  .smc-card-title {
+    font-size: 19px;
+  }
+
+  .smc-card-sub {
+    font-size: 13px;
+  }
+
+  .smc-plate-badge {
+    height: 32px;
+  }
+
+  .smc-plate-badge-reg {
+    font-size: 18px;
+    padding: 0 10px;
+  }
+
+  .smc-car-head {
+    margin-bottom: 12px;
+  }
+
+  .smc-car-name {
+    font-size: 21px;
+    margin: 10px 0 4px;
+  }
+
+  .smc-car-meta {
+    font-size: 12.5px;
+  }
+
+  .smc-change {
+    font-size: 12px;
+  }
+
+  .smc-confirm .smc-car-name {
+    font-size: 32px;
+  }
+
+  .smc-confirm .smc-car-meta {
+    font-size: 14.5px;
+  }
+
+  .smc-confirm .smc-actions {
+    margin-top: 24px;
+  }
+
+  /* ── Step 2: chips + form ── */
+  .smc-chips {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .smc-chip {
+    padding: 7px 10px;
+    font-size: 12.5px;
+    border-radius: 8px;
+  }
+
+  .smc-chip svg {
+    font-size: 15px;
+  }
+
+  .smc-form-grid {
+    grid-template-columns: 1fr;
+    gap: 11px;
+  }
+
+  .smc-field {
+    gap: 4px;
+  }
+
+  .smc-label {
+    font-size: 12px;
+  }
+
+  /* Inputs stay at 16px text: anything smaller makes iPhones zoom in on focus.
+     Less padding keeps the fields compact instead. */
+  .smc-input {
+    padding: 8px 11px;
+    font-size: 16px;
+    border-radius: 9px;
+  }
+
+  textarea.smc-input {
+    min-height: 70px;
+  }
+
+  .smc-field-error {
+    font-size: 12px;
+  }
+
+  .smc-drop {
+    padding: 14px 12px;
+  }
+
+  .smc-drop-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .smc-drop-text {
+    font-size: 12.5px;
+  }
+
+  .smc-drop-hint {
+    font-size: 11px;
+  }
+
+  .smc-thumbs {
+    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+    gap: 8px;
+  }
+
+  .smc-actions {
+    margin-top: 22px;
+    gap: 10px;
+  }
+
+  .smc-btn {
+    height: 46px;
+    font-size: 14px;
+    border-radius: 9px;
+  }
+
+  .smc-actions .smc-btn {
+    flex: 1;
+    padding: 0 14px;
+  }
+
+  /* ── Step 3: appointment ── */
+  /* Day strip scrolls sideways instead of squashing 7 columns */
+  .smc-days {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 6px;
+    margin: 0 -14px 18px;
+    padding: 4px 14px 8px;
+    scrollbar-width: none;
+  }
+
+  .smc-days::-webkit-scrollbar {
+    display: none;
+  }
+
+  .smc-day {
+    flex: 0 0 64px;
+    padding: 10px 4px;
+    gap: 4px;
+    border-radius: 10px;
+    scroll-snap-align: start;
+  }
+
+  .smc-day-name {
+    font-size: 12px;
+  }
+
+  .smc-day-date {
+    font-size: 14.5px;
+  }
+
+  .smc-date-heading {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+
+  .smc-slot-groups {
+    gap: 12px;
+    row-gap: 20px;
+  }
+
+  .smc-slot-group h4 {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .smc-slot-group h4 svg {
+    font-size: 15px;
+  }
+
+  .smc-slot-list {
+    gap: 7px;
+  }
+
+  .smc-slot {
+    padding: 9px 4px;
+    font-size: 12px;
+    border-radius: 7px;
+  }
+
+  .smc-slots-note,
+  .smc-submit-error {
+    font-size: 13px;
+  }
+
+  /* ── Step 4: done ── */
+  .smc-done {
+    gap: 28px;
+    padding: 8px 0;
+  }
+
+  .smc-done-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 28px;
+    border-radius: 14px;
+    margin-bottom: 18px;
+  }
+
+  .smc-done-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .smc-done-text {
+    font-size: 15px;
+    margin-bottom: 22px;
+  }
+
+  .smc-estimate {
+    margin-bottom: 12px;
+  }
+
+  .smc-estimate-label {
+    font-size: 18px;
+  }
+
+  .smc-estimate-value {
+    font-size: 38px;
+  }
+
+  .smc-estimate-note {
+    font-size: 12px;
+  }
+
+  .smc-summary {
+    padding: 20px 18px;
+    border-radius: 14px;
+  }
+
+  .smc-summary h3 {
+    font-size: 18px;
+    margin-bottom: 14px;
+  }
+
+  .smc-summary-vehicle {
+    font-size: 13px;
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+  }
+
+  .smc-summary dl {
+    gap: 9px;
+  }
+
+  .smc-summary-row {
+    font-size: 13px;
+  }
+
+  .smc-summary-row.is-stacked dd {
+    font-size: 12.5px;
+  }
+
+  /* ── How it works ── */
+  .smc-how {
+    padding: 44px 14px;
+  }
+
+  .smc-section-tag {
+    font-size: 10.5px;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+  }
+
+  .smc-section-title {
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+
+  .smc-section-subtitle {
+    font-size: 14px;
+  }
+
+  .smc-how-grid {
+    gap: 16px;
+    margin-top: 30px;
+  }
+
+  .smc-how-card {
+    padding: 10px 10px 20px;
+    border-radius: 20px;
+  }
+
+  .smc-how-media {
+    border-radius: 14px;
+  }
+
+  .smc-how-step {
+    top: 10px;
+    left: 10px;
+    padding: 7px 11px;
+    border-radius: 9px;
+    font-size: 9.5px;
+  }
+
+  .smc-how-card h3 {
+    font-size: 17px;
+    margin: 16px 8px 6px;
+  }
+
+  .smc-how-card p {
+    font-size: 13px;
+    margin: 0 8px;
+  }
+}
+
+/* Extra-small phones (iPhone SE, small Androids) */
+@media (max-width: 400px) {
+  .smc-title {
+    font-size: 44px;
+  }
+
+  .smc-plate,
+  .smc-mileage,
+  .smc-btn-value {
+    height: 54px;
+  }
+
+  .smc-plate input {
+    font-size: 25px;
+  }
+
+  .smc-mileage input {
+    font-size: 23px;
+  }
+
+  .smc-day {
+    flex-basis: 58px;
+  }
+
+  .smc-slot-groups {
+    grid-template-columns: 1fr;
+  }
+
+  .smc-progress-label {
+    display: none;
+  }
+
+  .smc-progress-step.is-current .smc-progress-label {
+    display: inline;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smc-hero,
+  .smc-card,
+  .smc-done {
+    animation: none;
+  }
+}
