@@ -35,7 +35,7 @@ import {
   FaSprayCan,
   FaHammer,
   FaInfoCircle,
-  FaMoneyBillWave,
+  FaTag,
   FaUserCircle,
   FaSignOutAlt,
   FaCalendarAlt 
@@ -203,9 +203,9 @@ function NavDrawer({ open, onClose }) {
             <span>Used Cars</span>
             <FaChevronDown size={12} className="nav-chevron" />
           </div>
-          <div className="drawer-nav-sell">
+          <Link href="/sell-my-car" className="drawer-nav-sell">
             <span>Looking to sell?</span>
-          </div>
+          </Link>
           <div
             className="drawer-nav-item"
             onClick={() => setServicesOpen(true)}
@@ -237,6 +237,10 @@ function NavDrawer({ open, onClose }) {
           <Link href="/contact" className="drawer-nav-item">
             <FaPhone size={18} className="nav-icon" />
             <span>Contact</span>
+          </Link>
+          <Link href="/sell-my-car" className="drawer-nav-item">
+            <FaTag size={18} className="nav-icon" />
+            <span>Sell your car</span>
           </Link>
         </nav>
 

@@ -47,6 +47,7 @@ const sitemapCategories = [
       { label: "Our Stock", path: "/stock", icon: <MdDirectionsCar /> },
       { label: "Dents & Paints", path: "/dents-paints", icon: <FaTools /> },
       { label: "Part Exchange", path: "/part-exchange", icon: <FaExchangeAlt /> },
+      { label: "Sell My Car", path: "/sell-my-car", icon: <FaExchangeAlt /> },
       { label: "Vehicle Sourcing", path: "/vehicle-sourcing", icon: <FaSearch /> },
       { label: "Delivery", path: "/delivery", icon: <FaTruck /> },
 { label: "Servicing", path: "/servicing", icon: <FaWrench /> },
