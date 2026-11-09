@@ -6,6 +6,18 @@ export const metadata = {
     "Sell your car to Noorrix Motors. Enter your registration for a free valuation, then book a time for us to inspect your car and confirm your offer.",
 };
 
-export default function Page() {
-  return <SellMyCar />;
+const BASE = process.env.NEXT_PUBLIC_API_URL?.trim();
+
+async function fetchFAQs() {
+  try {
+    const res = await fetch(`${BASE}/api/faqs/`, { next: { revalidate: 60 } });
+    return res.ok ? res.json() : [];
+  } catch {
+    return [];
+  }
+}
+
+export default async function Page() {
+  const faqs = await fetchFAQs();
+  return <SellMyCar faqs={faqs} />;
 }

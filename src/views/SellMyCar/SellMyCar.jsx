@@ -49,7 +49,7 @@ const firstMessages = (errors = {}) =>
  * Confirm is skipped when the lookup can't identify the car, so a customer is never blocked.
  * All state lives here so going Back never loses what the customer typed.
  */
-export default function SellMyCar() {
+export default function SellMyCar({ faqs = [] }) {
   const [step, setStep] = useState("vehicle");
 
   const [reg, setReg] = useState("");
@@ -304,7 +304,7 @@ export default function SellMyCar() {
         </div>
       </section>
 
-      <FAQ/>
+      <FAQ faqs={faqs} />
       <NoorrixFooter />
     </>
   );
