@@ -34,14 +34,15 @@ async function readJson(res) {
 /**
  * Look up a vehicle by registration and get an instant estimate.
  *
- * Resolves to `{ make, model, year, body_type, fuel_type, transmission, colour,
- * estimated_value }`, or `null` if the lookup service is unavailable — the flow
- * carries on without the details and the team values the car manually.
+ * Resolves to `{ make, model, year, colour, fuel_type }`, or `null` if the lookup
+ * service is unavailable — the flow carries on without the details and the team
+ * values the car manually. `body_type`, `transmission` and `estimated_value` are
+ * shown automatically if a data source that provides them is ever added.
  * Throws an Error with code "REG_NOT_FOUND" when the registration doesn't exist,
  * or "INVALID" when the backend rejects the reg/mileage.
  */
 export async function lookupVehicle({ reg, mileage }) {
-  if (DEMO) return demoLookup(mileage);
+  if (DEMO) return demoLookup();
 
   let res;
   try {
@@ -105,7 +106,7 @@ export async function getSellAvailability(date) {
 export async function submitSellMyCar({
   reg, mileage, name, email, phone, address, message, date, time, images = [],
 }) {
-  if (DEMO) return demoSubmit(mileage);
+  if (DEMO) return demoSubmit();
 
   const fd = new FormData();
   fd.append("reg", normaliseReg(reg));
@@ -146,24 +147,15 @@ export async function submitSellMyCar({
 }
 
 // ── Demo-mode fakes (development only, see DEMO above) ───────────────────────
+// Same fields the free DVSA lookup gives, so demo mode shows what customers will see.
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-const demoValue = (mileage) => Math.max(750, Math.round((9000 - Number(mileage) * 0.05) / 10) * 10);
 
-async function demoLookup(mileage) {
+async function demoLookup() {
   await wait(700);
-  return {
-    make: "Ford",
-    model: "Fiesta",
-    year: 2018,
-    body_type: "Hatchback",
-    fuel_type: "Petrol",
-    transmission: "Manual",
-    colour: "Blue",
-    estimated_value: demoValue(mileage),
-  };
+  return { make: "CITROEN", model: "C3", year: 2009, colour: "SILVER", fuel_type: "DIESEL" };
 }
 
-async function demoSubmit(mileage) {
+async function demoSubmit() {
   await wait(1200);
-  return { id: 0, estimated_value: demoValue(mileage), message: "Demo submission — nothing was sent." };
+  return { id: 0, message: "Demo submission — nothing was sent." };
 }

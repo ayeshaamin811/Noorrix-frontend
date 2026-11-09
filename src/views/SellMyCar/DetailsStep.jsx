@@ -3,15 +3,14 @@ import { FiArrowLeft, FiArrowRight, FiAlertCircle } from "react-icons/fi";
 import { IoCarSportOutline, IoSpeedometerOutline } from "react-icons/io5";
 import { BsFuelPump } from "react-icons/bs";
 import { TbManualGearbox } from "react-icons/tb";
+import { vehicleTitle } from "../../lib/format";
 import { isValidUkPhone, UK_PHONE_ERROR } from "../../lib/ukPhone";
 import ImageUpload from "./ImageUpload";
 import StepProgress from "./StepProgress";
 import UkPlate from "./UkPlate";
+import { vehicleName, vehicleSpecs } from "./vehicle";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-// Lookup services often send "PETROL" / "MANUAL" — show them as "Petrol" / "Manual".
-const titleCase = (s) => String(s).toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 
 export const FIELDS = ["name", "email", "phone", "address", "message"];
 
@@ -46,19 +45,17 @@ function Field({ id, label, required, error, full, children }) {
 /** Step 2 — vehicle summary chips + contact details + photos. */
 export default function DetailsStep({
   reg, mileage, vehicle, details, onDetailsChange, errors, onErrorsChange,
-  images, onAddImages, onRemoveImage, onBack, onNext,
+  images, onAddImages, onRemoveImage, onBack, onChangeCar, onNext,
 }) {
   const chips = [
-    vehicle?.body_type && { icon: IoCarSportOutline, label: titleCase(vehicle.body_type) },
-    vehicle?.fuel_type && { icon: BsFuelPump, label: titleCase(vehicle.fuel_type) },
-    vehicle?.transmission && { icon: TbManualGearbox, label: titleCase(vehicle.transmission) },
+    vehicle?.body_type && { icon: IoCarSportOutline, label: vehicleTitle(vehicle.body_type) },
+    vehicle?.fuel_type && { icon: BsFuelPump, label: vehicleTitle(vehicle.fuel_type) },
+    vehicle?.transmission && { icon: TbManualGearbox, label: vehicleTitle(vehicle.transmission) },
     { icon: IoSpeedometerOutline, label: `${Number(mileage).toLocaleString("en-GB")} miles` },
   ].filter(Boolean);
 
-  const vehicleName = [vehicle?.make && titleCase(vehicle.make), vehicle?.model && titleCase(vehicle.model)]
-    .filter(Boolean)
-    .join(" ");
-  const vehicleMeta = [vehicle?.year, vehicle?.colour && titleCase(vehicle.colour)].filter(Boolean).join(" · ");
+  const carName = vehicleName(vehicle);
+  const carSpecs = vehicleSpecs(vehicle, ["year", "colour"]).join(" · ");
 
   const setFieldError = (name, message) => {
     if ((errors[name] || "") === (message || "")) return;
@@ -106,24 +103,20 @@ export default function DetailsStep({
   });
 
   return (
-    <div className="smc-card">
+    <div className="smc-card smc-details">
       <StepProgress current={1} />
 
-      <div className="smc-card-head">
-        <div>
-          <h2 className="smc-card-title">Tell us about you</h2>
-          <p className="smc-card-sub">We&apos;ll use these details to send your offer and arrange the inspection.</p>
-        </div>
-        <div className="smc-vehicle">
-          <UkPlate reg={reg} />
-          <div className="smc-vehicle-text">
-            {vehicleName && <span className="smc-vehicle-name">{vehicleName}</span>}
-            {vehicleMeta && <span className="smc-vehicle-meta">{vehicleMeta}</span>}
-            <button type="button" className="smc-change" onClick={onBack}>
-              Change car
-            </button>
-          </div>
-        </div>
+      <div className="smc-car-head">
+        <UkPlate reg={reg} />
+        <h2 className="smc-car-name">{carName || "Tell us about you"}</h2>
+        <p className="smc-car-meta">
+          <span>
+            {carName ? carSpecs : <>We&apos;ll use these details to send your offer and arrange the inspection.</>}
+          </span>
+          <button type="button" className="smc-change" onClick={onChangeCar}>
+            Change car
+          </button>
+        </p>
       </div>
 
       <ul className="smc-chips">
@@ -163,7 +156,7 @@ export default function DetailsStep({
         </Field>
 
         <Field id="smc-message" label="Message" error={errors.message} full>
-          <textarea rows={4} placeholder="Write your message here" {...inputProps("message")} />
+          <textarea rows={3} placeholder="Write your message here" {...inputProps("message")} />
         </Field>
 
         <div className="smc-field smc-field--full">

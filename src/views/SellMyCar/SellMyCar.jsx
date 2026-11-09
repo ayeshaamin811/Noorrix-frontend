@@ -1,35 +1,40 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { FaCarSide, FaCamera, FaCalendarAlt } from "react-icons/fa";
 import Navbar from "../../components/Navbar/Navbar";
 import NoorrixFooter from "../../components/Footer/Footer";
 import { lookupVehicle, submitSellMyCar } from "../../lib/sellMyCar";
 import { getTestimonials } from "../../lib/testimonials";
 import { toE164UkPhone } from "../../lib/ukPhone";
+import { vehicleName } from "./vehicle";
 import VehicleStep from "./VehicleStep";
+import ConfirmStep from "./ConfirmStep";
 import DetailsStep, { FIELDS } from "./DetailsStep";
 import AppointmentStep from "./AppointmentStep";
 import SuccessStep from "./SuccessStep";
 import "./SellMyCar.css";
+import FAQ from "@/components/Faqs/Faqs";
 
 const INITIAL_DETAILS = { name: "", email: "", phone: "", address: "", message: "" };
 
 const HOW_IT_WORKS = [
   {
-    icon: FaCarSide,
-    title: "Enter your reg",
-    desc: "Tell us your registration and mileage and we'll look up your car's details.",
+    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&q=75",
+    alt: "Customer entering their car details on a laptop",
+    title: "Share Your Car Details",
+    desc: "Enter your registration and mileage, then add a few details and photos through our simple online form so we can prepare your valuation.",
   },
   {
-    icon: FaCamera,
-    title: "Add your details",
-    desc: "Share your contact details and a few photos so we can prepare the best offer.",
+    image: "https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=800&q=75",
+    alt: "Technician inspecting a car engine with the bonnet open",
+    title: "Professional Inspection",
+    desc: "Book a time that suits you. Our experts will carry out a quick, hassle-free inspection in person and present you with a final offer.",
   },
   {
-    icon: FaCalendarAlt,
-    title: "Book an inspection",
-    desc: "Pick a time that suits you. We'll inspect your car and confirm your offer.",
+    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=75",
+    alt: "Two people shaking hands to agree a deal",
+    title: "Payment & Handover",
+    desc: "Once you're happy with the offer, we'll complete the payment and arrange the handover of your car at a time that works for you.",
   },
 ];
 
@@ -38,8 +43,10 @@ const firstMessages = (errors = {}) =>
   Object.fromEntries(Object.entries(errors).map(([k, v]) => [k, Array.isArray(v) ? v[0] : String(v)]));
 
 /**
- * Sell My Car — four steps on one page:
- *   vehicle (reg + mileage) → details (contact + photos) → appointment (inspection slot) → done
+ * Sell My Car — all on one page:
+ *   vehicle (reg + mileage) → confirm (is this your car?) → details (contact + photos)
+ *   → appointment (inspection slot) → done
+ * Confirm is skipped when the lookup can't identify the car, so a customer is never blocked.
  * All state lives here so going Back never loses what the customer typed.
  */
 export default function SellMyCar() {
@@ -99,8 +106,9 @@ export default function SellMyCar() {
     setLookupLoading(true);
     setLookupError("");
     try {
-      setVehicle(await lookupVehicle({ reg, mileage: Number(mileage) }));
-      goTo("details");
+      const found = await lookupVehicle({ reg, mileage: Number(mileage) });
+      setVehicle(found);
+      goTo(vehicleName(found) ? "confirm" : "details");
     } catch (err) {
       setLookupError(err.message);
     } finally {
@@ -213,6 +221,15 @@ export default function SellMyCar() {
             />
           )}
 
+          {step === "confirm" && (
+            <ConfirmStep
+              reg={reg}
+              vehicle={vehicle}
+              onBack={() => goTo("vehicle")}
+              onNext={() => goTo("details")}
+            />
+          )}
+
           {step === "details" && (
             <DetailsStep
               reg={reg}
@@ -225,7 +242,8 @@ export default function SellMyCar() {
               images={images}
               onAddImages={addImages}
               onRemoveImage={removeImage}
-              onBack={() => goTo("vehicle")}
+              onBack={() => goTo(vehicleName(vehicle) ? "confirm" : "vehicle")}
+              onChangeCar={() => goTo("vehicle")}
               onNext={() => goTo("appointment")}
             />
           )}
@@ -263,26 +281,30 @@ export default function SellMyCar() {
       {/* How it works */}
       <section className="smc-how">
         <div className="smc-how-inner">
-          <span className="smc-section-tag">Simple Process</span>
+          <span className="smc-section-tag">Simple 3-Step Process</span>
           <h2 className="smc-section-title">
-            How Selling <span>Works</span>
+            Sell your car for what it&apos;s <span>really worth</span>
           </h2>
-          <p className="smc-section-subtitle">Three quick steps from valuation to sale — no obligation.</p>
+          <p className="smc-section-subtitle">
+            Experience a fast, transparent, and fair service. We handle the heavy lifting so you can sell
+            with confidence.
+          </p>
           <div className="smc-how-grid">
-            {HOW_IT_WORKS.map(({ icon: Icon, title, desc }, i) => (
-              <div key={title} className="smc-how-card">
-                <span className="smc-how-num">0{i + 1}</span>
-                <span className="smc-how-icon">
-                  <Icon size={20} />
-                </span>
+            {HOW_IT_WORKS.map(({ image, alt, title, desc }, i) => (
+              <article key={title} className="smc-how-card">
+                <div className="smc-how-media">
+                  <img src={image} alt={alt} loading="lazy" />
+                  <span className="smc-how-step">Step 0{i + 1}</span>
+                </div>
                 <h3>{title}</h3>
                 <p>{desc}</p>
-              </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
+      <FAQ/>
       <NoorrixFooter />
     </>
   );

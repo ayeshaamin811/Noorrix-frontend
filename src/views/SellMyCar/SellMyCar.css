@@ -418,29 +418,71 @@
   margin: 0;
 }
 
-.smc-vehicle {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+/* Car identity: plate, name and one-line details (confirm + details steps) */
+.smc-car-head {
+  margin-bottom: 14px;
 }
 
-.smc-vehicle-text {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1px;
-  line-height: 1.3;
-}
-
-.smc-vehicle-name {
-  font-size: 14px;
-  font-weight: 700;
+.smc-car-name {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
   color: var(--smc-ink);
+  margin: 10px 0 4px;
 }
 
-.smc-vehicle-meta {
-  font-size: 12.5px;
-  color: var(--smc-muted);
+.smc-car-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  font-size: 13.5px;
+  color: #374151;
+  margin: 0;
+}
+
+.smc-confirm {
+  max-width: 680px;
+}
+
+.smc-confirm .smc-car-head {
+  margin-bottom: 0;
+}
+
+.smc-confirm .smc-car-name {
+  font-size: 44px;
+}
+
+.smc-confirm .smc-car-meta {
+  font-size: 17px;
+}
+
+/* Details form: tighter than the other steps */
+.smc-details {
+  padding: 22px 28px 24px;
+}
+
+.smc-details .smc-progress {
+  margin-bottom: 16px;
+}
+
+.smc-details .smc-actions {
+  margin-top: 10px;
+}
+
+.smc-details .smc-btn {
+  height: 42px;
+  padding: 0 20px;
+  font-size: 13.5px;
+}
+
+.smc-confirm .smc-change {
+  font-size: inherit;
+}
+
+.smc-confirm .smc-actions {
+  margin-top: 32px;
 }
 
 .smc-change {
@@ -493,9 +535,9 @@
 .smc-chips {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 10px;
+  gap: 8px;
   list-style: none;
-  margin: 0 0 28px;
+  margin: 0 0 16px;
   padding: 0;
 }
 
@@ -504,16 +546,16 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: 7px 12px;
+  border-radius: 8px;
   background: #1a1a1a;
   color: #fff;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
 }
 
 .smc-chip svg {
-  font-size: 17px;
+  font-size: 15px;
   color: var(--smc-accent-on-dark);
   flex-shrink: 0;
 }
@@ -522,13 +564,13 @@
 .smc-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  gap: 12px 14px;
 }
 
 .smc-field {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 5px;
   min-width: 0;
 }
 
@@ -537,7 +579,7 @@
 }
 
 .smc-label {
-  font-size: 13.5px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--smc-ink);
 }
@@ -549,12 +591,12 @@
 
 .smc-input {
   width: 100%;
-  padding: 13px 15px;
+  padding: 9px 12px;
   border: 1.5px solid var(--smc-line);
-  border-radius: 10px;
+  border-radius: 8px;
   background: var(--smc-field);
   font-family: inherit;
-  font-size: 14.5px;
+  font-size: 13.5px;
   color: var(--smc-ink);
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
@@ -584,7 +626,7 @@
 }
 
 textarea.smc-input {
-  min-height: 110px;
+  min-height: 76px;
   resize: vertical;
 }
 
@@ -593,7 +635,7 @@ textarea.smc-input {
   align-items: center;
   gap: 6px;
   margin: 0;
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--smc-danger);
 }
@@ -601,9 +643,9 @@ textarea.smc-input {
 /* Image upload */
 .smc-drop {
   border: 1.5px dashed #cdb3c4;
-  border-radius: 12px;
+  border-radius: 10px;
   background: #fcf8fb;
-  padding: 28px 20px;
+  padding: 16px;
   text-align: center;
   cursor: pointer;
   transition: border-color 0.2s ease, background 0.2s ease;
@@ -618,21 +660,21 @@ textarea.smc-input {
 }
 
 .smc-drop-icon {
-  width: 50px;
-  height: 50px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  margin: 0 auto 12px;
+  margin: 0 auto 6px;
   display: grid;
   place-items: center;
   background: rgba(172, 28, 122, 0.1);
   color: var(--smc-accent);
-  font-size: 24px;
+  font-size: 18px;
 }
 
 .smc-drop-text {
-  font-size: 14.5px;
+  font-size: 13px;
   color: #374151;
-  margin: 0 0 4px;
+  margin: 0 0 2px;
 }
 
 .smc-drop-browse {
@@ -643,17 +685,17 @@ textarea.smc-input {
 }
 
 .smc-drop-hint {
-  font-size: 12px;
+  font-size: 11px;
   color: #9ca3af;
   margin: 0;
 }
 
 .smc-thumbs {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 8px;
   list-style: none;
-  margin: 12px 0 0;
+  margin: 10px 0 0;
   padding: 0;
 }
 
@@ -1039,33 +1081,34 @@ textarea.smc-input {
 
 /* ── How it works ────────────────────────────── */
 .smc-how {
-  background: #f7f7f9;
+  background: #fff;
   padding: 80px 20px;
 }
 
 .smc-how-inner {
-  max-width: 1100px;
+  max-width: 1260px;
   margin: 0 auto;
   text-align: center;
 }
 
 .smc-section-tag {
   display: inline-block;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 2px;
   color: var(--theme-color, #ac1c7a);
   margin-bottom: 12px;
 }
 
 .smc-section-title {
-  font-size: 2.2rem;
+  font-size: 46px;
   font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.25;
-  color: #111;
-  margin: 0 0 12px;
+  letter-spacing: -0.04em;
+  line-height: 1.12;
+  color: #12121c;
+  max-width: 680px;
+  margin: 0 auto 18px;
 }
 
 .smc-section-title span {
@@ -1073,68 +1116,84 @@ textarea.smc-input {
 }
 
 .smc-section-subtitle {
-  font-size: 1rem;
+  font-size: 16px;
+  line-height: 1.6;
   color: #6b7280;
+  max-width: 640px;
   margin: 0 auto;
-  max-width: 520px;
 }
 
 .smc-how-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
-  margin-top: 44px;
+  gap: 26px;
+  margin-top: 64px;
   text-align: left;
 }
 
 .smc-how-card {
-  position: relative;
   background: #fff;
-  border: 1px solid #eee;
-  border-radius: 16px;
-  padding: 28px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f3;
+  border-radius: 28px;
+  padding: 14px 14px 30px;
+  box-shadow: 0 6px 24px rgba(17, 17, 28, 0.04);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .smc-how-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 14px 40px rgba(172, 28, 122, 0.12);
+  box-shadow: 0 16px 40px rgba(172, 28, 122, 0.12);
 }
 
-.smc-how-num {
+.smc-how-media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #f4f4f5;
+}
+
+.smc-how-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.smc-how-card:hover .smc-how-media img {
+  transform: scale(1.04);
+}
+
+.smc-how-step {
   position: absolute;
-  top: 18px;
-  right: 24px;
-  font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
-  font-size: 46px;
-  font-weight: 800;
+  top: 16px;
+  left: 16px;
+  padding: 9px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
   line-height: 1;
-  color: rgba(172, 28, 122, 0.12);
-}
-
-.smc-how-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  background: linear-gradient(135deg, var(--theme-color, #ac1c7a), #8a1560);
+  text-transform: uppercase;
+  color: #12121c;
 }
 
 .smc-how-card h3 {
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 700;
-  color: #111;
-  margin: 16px 0 8px;
+  letter-spacing: -0.01em;
+  color: #12121c;
+  margin: 26px 14px 10px;
 }
 
 .smc-how-card p {
-  font-size: 14px;
-  line-height: 1.7;
+  font-size: 13.5px;
+  line-height: 1.6;
   color: #6b7280;
-  margin: 0;
+  margin: 0 14px;
 }
 
 /* ── Responsive ──────────────────────────────── */
@@ -1171,9 +1230,14 @@ textarea.smc-input {
     text-align: left;
   }
 
+  .smc-section-title {
+    font-size: 38px;
+  }
+
   .smc-how-grid {
     grid-template-columns: 1fr;
     max-width: 520px;
+    margin-top: 44px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -1331,25 +1395,45 @@ textarea.smc-input {
     padding: 0 10px;
   }
 
-  .smc-vehicle-name {
-    font-size: 13px;
+  .smc-car-head {
+    margin-bottom: 12px;
   }
 
-  .smc-vehicle-meta,
+  .smc-car-name {
+    font-size: 21px;
+    margin: 10px 0 4px;
+  }
+
+  .smc-car-meta {
+    font-size: 12.5px;
+  }
+
   .smc-change {
     font-size: 12px;
+  }
+
+  .smc-confirm .smc-car-name {
+    font-size: 32px;
+  }
+
+  .smc-confirm .smc-car-meta {
+    font-size: 14.5px;
+  }
+
+  .smc-confirm .smc-actions {
+    margin-top: 24px;
   }
 
   /* ── Step 2: chips + form ── */
   .smc-chips {
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
   }
 
   .smc-chip {
-    padding: 8px 10px;
-    font-size: 13px;
+    padding: 7px 10px;
+    font-size: 12.5px;
     border-radius: 8px;
   }
 
@@ -1359,27 +1443,27 @@ textarea.smc-input {
 
   .smc-form-grid {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 11px;
   }
 
   .smc-field {
-    gap: 6px;
+    gap: 4px;
   }
 
   .smc-label {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   /* Inputs stay at 16px text: anything smaller makes iPhones zoom in on focus.
      Less padding keeps the fields compact instead. */
   .smc-input {
-    padding: 10px 12px;
+    padding: 8px 11px;
     font-size: 16px;
     border-radius: 9px;
   }
 
   textarea.smc-input {
-    min-height: 90px;
+    min-height: 70px;
   }
 
   .smc-field-error {
@@ -1387,22 +1471,22 @@ textarea.smc-input {
   }
 
   .smc-drop {
-    padding: 20px 14px;
+    padding: 14px 12px;
   }
 
   .smc-drop-icon {
-    width: 42px;
-    height: 42px;
-    font-size: 20px;
-    margin-bottom: 10px;
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+    margin-bottom: 6px;
   }
 
   .smc-drop-text {
-    font-size: 13.5px;
+    font-size: 12.5px;
   }
 
   .smc-drop-hint {
-    font-size: 11.5px;
+    font-size: 11px;
   }
 
   .smc-thumbs {
@@ -1566,13 +1650,14 @@ textarea.smc-input {
   }
 
   .smc-section-tag {
-    font-size: 0.72rem;
+    font-size: 10.5px;
+    letter-spacing: 1.5px;
     margin-bottom: 8px;
   }
 
   .smc-section-title {
-    font-size: 1.5rem;
-    margin-bottom: 8px;
+    font-size: 28px;
+    margin-bottom: 10px;
   }
 
   .smc-section-subtitle {
@@ -1580,34 +1665,35 @@ textarea.smc-input {
   }
 
   .smc-how-grid {
-    gap: 14px;
-    margin-top: 28px;
+    gap: 16px;
+    margin-top: 30px;
   }
 
   .smc-how-card {
-    padding: 22px 20px;
+    padding: 10px 10px 20px;
+    border-radius: 20px;
+  }
+
+  .smc-how-media {
     border-radius: 14px;
   }
 
-  .smc-how-num {
-    font-size: 38px;
-    top: 16px;
-    right: 18px;
-  }
-
-  .smc-how-icon {
-    width: 42px;
-    height: 42px;
+  .smc-how-step {
+    top: 10px;
+    left: 10px;
+    padding: 7px 11px;
+    border-radius: 9px;
+    font-size: 9.5px;
   }
 
   .smc-how-card h3 {
-    font-size: 15.5px;
-    margin: 12px 0 6px;
+    font-size: 17px;
+    margin: 16px 8px 6px;
   }
 
   .smc-how-card p {
-    font-size: 13.5px;
-    line-height: 1.6;
+    font-size: 13px;
+    margin: 0 8px;
   }
 }
 

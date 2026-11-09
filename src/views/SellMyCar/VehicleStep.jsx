@@ -76,7 +76,7 @@ export default function VehicleStep({
         <button type="submit" className="smc-btn-value" disabled={loading}>
           {loading ? (
             <>
-              <span className="smc-spinner" aria-hidden="true" /> Valuing…
+              <span className="smc-spinner" aria-hidden="true" /> Finding your car…
             </>
           ) : (
             <>

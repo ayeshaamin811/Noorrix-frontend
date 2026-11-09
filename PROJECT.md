@@ -151,7 +151,7 @@ noorrix-motors/
 │   │   ├── PaymentCancel/               # Folder
 │   │   ├── PaymentComplete/             # Folder
 │   │   ├── PrivacyPolicy.jsx / PrivacyPolicy.css
-│   │   ├── SellMyCar/                   # Folder — 4-step sell flow (reg → details → inspection → done)
+│   │   ├── SellMyCar/                   # Folder — sell flow (reg → confirm car → details → inspection → done)
 │   │   ├── ResetPassword/               # Folder
 │   │   ├── Servicing.jsx / Servicing.css
 │   │   ├── Sitemap.jsx / Sitemap.css

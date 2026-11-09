@@ -7,7 +7,23 @@ export const money = (n) => (n == null ? null : `£${Number(n).toFixed(2)}`);   
 export const miles = (n) => (n == null ? "" : `${Number(n).toLocaleString("en-GB")} Miles`);     // 42300    -> "42,300 Miles"
 export const cc    = (n) => (n == null ? "" : `${Number(n).toLocaleString("en-GB")} CC`);         // 1995     -> "1,995 CC"
 
-export const ukDate = (iso) =>                                                                    // "2026-06-01" -> "01/06/2026"
+// Vehicle data sources send names in capitals. Title-case them, but keep acronyms
+// and model codes as they are: "CITROEN" -> "Citroen", "RAV4" -> "RAV4", "GOLF GTI" -> "Golf GTI".
+const VEHICLE_ACRONYMS = new Set([
+  "BMW", "MG", "DS", "BYD", "LDV", "VW", "AMG", "GT", "GTI", "GTD", "GTE", "RS", "ST", "TT", "SUV", "MPV",
+]);
+export const vehicleTitle = (value) =>
+  String(value ?? "")
+    .trim()
+    .split(/\s+/)
+    .map((word) => {
+      const upper = word.toUpperCase();
+      if (/\d/.test(word) || VEHICLE_ACRONYMS.has(upper)) return upper;
+      return upper.split("-").map((part) => part.charAt(0) + part.slice(1).toLowerCase()).join("-");
+    })
+    .join(" ");
+
+export const ukDate = (iso) =>                                                                   // "2026-06-01" -> "01/06/2026"
   iso ? new Date(iso).toLocaleDateString("en-GB") : null;
 
 // Slugify a make for /used-cars/:brand links (matches the backend's slug format).
