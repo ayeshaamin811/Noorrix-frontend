@@ -1,6 +1,6 @@
 // Inspection slot + date helpers for the Sell My Car flow.
-// Dates are local "YYYY-MM-DD" strings and times "HH:MM" (24h), matching the
-// shape lib/appointments.js already sends to the backend.
+// Dates are "YYYY-MM-DD" strings and times "HH:MM" (24h), always in UK time,
+// matching the shape lib/appointments.js already sends to the backend.
 
 export const SLOT_MINUTES = 30;
 export const DAYS_AHEAD = 7;
@@ -20,7 +20,7 @@ function slotsBetween(from, to) {
 
 // Opening hours for inspections, grouped the way they're shown to the customer.
 export const SLOT_GROUPS = [
-  { key: "morning", label: "Morning", times: slotsBetween("10:00", "12:00") },
+  { key: "morning", label: "Morning", times: slotsBetween("09:00", "12:00") },
   { key: "lunch", label: "Lunch time", times: slotsBetween("12:00", "14:00") },
   { key: "afternoon", label: "Afternoon", times: slotsBetween("14:00", "17:00") },
   { key: "evening", label: "Evening", times: slotsBetween("17:00", "18:00") },
@@ -36,6 +36,24 @@ export function to12h(hhmm) {
 /** "12:00" -> "12:00 PM - 12:30 PM" */
 export const slotLabel = (start) =>
   `${to12h(start)} - ${to12h(fromMinutes(toMinutes(start) + SLOT_MINUTES))}`;
+
+/**
+ * The current time in the UK, whatever timezone the visitor is in. The returned Date's
+ * local fields (getHours, getDate…) read as London time, GMT or BST as appropriate.
+ */
+export function ukNow(at = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hourCycle: "h23",
+  }).formatToParts(at);
+  const get = (type) => Number(parts.find((p) => p.type === type).value);
+  return new Date(get("year"), get("month") - 1, get("day"), get("hour"), get("minute"));
+}
 
 /** Local-time ISO date (toISOString() would shift to UTC and can land on the wrong day). */
 export const localISO = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
