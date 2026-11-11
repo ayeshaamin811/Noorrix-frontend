@@ -1,13 +1,11 @@
 "use client";
-import { FaFacebookF, FaLinkedinIn, FaInstagram, FaWhatsapp } from "react-icons/fa";
+import { FaFacebookF, FaYoutube } from "react-icons/fa";
 import HeroFilter from "../HeroFilter/Filter";
 import "./Hero.css";
 
 const socialLinks = [
-  { icon: <FaFacebookF />, href: "#" },
-  { icon: <FaLinkedinIn />, href: "#" },
-  { icon: <FaInstagram />, href: "#" },
-  { icon: <FaWhatsapp />, href: "#" },
+  { icon: <FaFacebookF />, href: "https://www.facebook.com/noorrixmotors/", label: "Facebook" },
+  { icon: <FaYoutube />, href: "#", label: "YouTube" },
 ];
 
 export default function HeroBanner() {
@@ -42,7 +40,14 @@ export default function HeroBanner() {
       {/* Social Sidebar */}
       <div className="social-sidebar">
         {socialLinks.map((item, idx) => (
-          <a key={idx} href={item.href} className="social-icon" aria-label={`social-${idx}`}>
+          <a
+            key={idx}
+            href={item.href}
+            target={item.href.startsWith("http") ? "_blank" : undefined}
+            rel="noopener noreferrer"
+            className="social-icon"
+            aria-label={item.label}
+          >
             {item.icon}
           </a>
         ))}
