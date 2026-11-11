@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { FaFacebookF, FaInstagram, FaYoutube, FaTiktok, FaLinkedinIn } from "react-icons/fa";
+import { FaFacebookF, FaYoutube } from "react-icons/fa";
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaRegClock } from "react-icons/fa";
 import { FaCcVisa, FaCcMastercard, FaCcAmex, FaCcPaypal, FaCcApplePay } from "react-icons/fa";
 import { isValidEmail, subscribeNewsletter } from "../../lib/newsletter";
@@ -54,11 +54,8 @@ const NoorrixFooter = () => {
             Noorrix Motors Ltd is a trusted UK used car dealership offering quality vehicles, transparent pricing, expert sourcing, warranty, delivery, and professional automotive repair services with exceptional customer care.
           </p>
           <div className="footer-social">
-            <a href="#" aria-label="Facebook"><FaFacebookF /></a>
-            <a href="#" aria-label="Instagram"><FaInstagram /></a>
-            <a href="#" aria-label="LinkedIn"><FaLinkedinIn /></a>
+            <a href="https://www.facebook.com/noorrixmotors/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><FaFacebookF /></a>
             <a href="#" aria-label="YouTube"><FaYoutube /></a>
-            <a href="#" aria-label="TikTok"><FaTiktok /></a>
           </div>
         </div>
         {/* Center group — Company + Services + Contact + Newsletter */}
